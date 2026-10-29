@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vantora: AI Business Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme=dark]{--bg:#060913;--ink:#e2e8f0;--mut:#94a3b8;--glass:rgba(255,255,255,.04);--line:rgba(255,255,255,.12);--ind:#6366F1;--cy:#22D3EE;--em:#34D399;--am:#FBBF24;--ro:#FB7185;--blob:.28}
+[data-theme=light]{--bg:#f4f6fc;--ink:#0f172a;--mut:#475569;--glass:rgba(255,255,255,.75);--line:rgba(15,23,42,.12);--blob:.16}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.5 Sora,system-ui,sans-serif;min-height:100vh}
+[hidden]{display:none!important}
+.aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;background:linear-gradient(var(--line) 1px,transparent 1px) 0 0/48px 48px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/48px 48px;opacity:1}
+.aurora i{position:absolute;width:38rem;height:38rem;border-radius:50%;filter:blur(110px);opacity:var(--blob)}
+.glass{background:var(--glass);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--line);border-radius:18px;padding:18px;transition:box-shadow .3s,transform .3s}
+.glass:hover{box-shadow:0 0 40px -8px rgba(99,102,241,.55);transform:translateY(-2px)}
+button,select{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
+.btn{background:var(--ind);color:#fff;border:0;border-radius:99px;padding:9px 18px;font-weight:600;box-shadow:0 0 24px -4px var(--ind)}
+.chip{background:transparent;border:1px solid var(--line);border-radius:99px;padding:4px 12px;font-size:12px}
+.chip[aria-pressed=true]{background:var(--ind);border-color:var(--ind);color:#fff}
+.mut{color:var(--mut)}
+/* landing */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:22px;padding:24px;max-width:900px;margin:auto}
+.hero h1{font-size:clamp(34px,7vw,68px);line-height:1.05;font-weight:800;letter-spacing:-.03em}
+.feat{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));width:100%;text-align:left;margin-top:12px}
+/* app */
+header.top{position:sticky;top:0;z-index:20;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 20px;background:var(--glass);backdrop-filter:blur(24px);border-bottom:1px solid var(--line)}
+header .logo{font-weight:800;font-size:19px;margin-right:auto;background:none;border:0}
+.pill{display:flex;align-items:center;gap:7px;border-radius:99px;padding:5px 12px;font-size:12px;background:rgba(52,211,153,.12);color:var(--em);border:0}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+.live .dot{animation:pulse 1.4s infinite}
+@keyframes pulse{50%{opacity:.25;transform:scale(1.6)}}
+main{max-width:1200px;margin:auto;padding:20px;display:grid;gap:18px;grid-template-columns:repeat(3,1fr)}
+.span2{grid-column:span 2}.span3{grid-column:span 3}
+@media(max-width:900px){main{grid-template-columns:repeat(2,1fr)}.span3{grid-column:span 2}}
+@media(max-width:600px){main{grid-template-columns:1fr}.span2,.span3{grid-column:span 1}}
+.pagehead{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.pagehead h2{font-size:26px;font-weight:800;margin-right:auto}
+select{background:var(--glass);border:1px solid var(--line);border-radius:10px;padding:6px 10px}
+select option{color:#0f172a}
+.kpi .v{font-size:32px;font-weight:800;font-variant-numeric:tabular-nums}
+.tr{font-size:12px;font-weight:600}.up{color:var(--em)}.dn{color:var(--ro)}
+.spark{width:120px;height:44px}
+h3{font-size:15px;font-weight:600;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+svg text{fill:var(--mut);font-size:10px}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.3s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.fade{animation:fade 1.5s ease}@keyframes fade{from{opacity:0}}
+.donut circle{transition:stroke-width .2s;cursor:pointer}
+.bars{display:flex;gap:10px;align-items:flex-end;height:190px;padding-top:34px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;font-size:11px;color:var(--mut)}
+.bar b{width:100%;border-radius:10px 10px 4px 4px;transition:height .8s cubic-bezier(.2,.8,.2,1)}
+.av{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:700;color:#fff}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:var(--mut);font-weight:400;padding:6px 8px}td{padding:10px 8px;border-top:1px solid var(--line)}
+.prog{height:6px;border-radius:9px;background:var(--line);overflow:hidden;min-width:90px}.prog i{display:block;height:100%;background:var(--cy);transition:width 1.2s}
+.sw{width:38px;height:22px;border-radius:99px;border:0;background:var(--line);position:relative}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s}
+.sw[aria-checked=true]{background:var(--em)}.sw[aria-checked=true]::after{transform:translateX(16px)}
+.card-i{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:13px}.card-i:first-of-type{border:0}
+.card-i .btn{padding:5px 12px;font-size:12px;margin-left:auto;white-space:nowrap}
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);z-index:40;transform:translateX(105%);transition:transform .35s;display:flex;flex-direction:column;gap:10px;border-radius:0;background:var(--bg);border-left:1px solid var(--line)}
+.panel.open{transform:none}
+.panel .msgs{flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px;font-size:14px}
+.m-u{align-self:flex-end;background:var(--ind);color:#fff;padding:7px 12px;border-radius:14px;max-width:85%}
+.x{background:none;border:0;font-size:20px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ind);color:#fff;padding:10px 18px;border-radius:99px;z-index:60;font-size:13px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i style="background:#6366F1;top:-10rem;left:-8rem"></i><i style="background:#22D3EE;top:30%;right:-12rem"></i><i style="background:#34D399;bottom:-14rem;left:25%"></i></div>
+
+<section id="landing">
+  <div class="hero">
+    <h1>See where revenue is going before it gets there.</h1>
+    <p class="mut" style="max-width:560px">Vantora turns scattered business data into a live command center with forecasts, anomaly alerts and an assistant that explains the numbers.</p>
+    <button class="btn" id="launch">Launch Live Demo</button>
+    <div class="feat">
+      <div class="glass"><b>Live data</b><p class="mut">Numbers and sparklines update as events arrive.</p></div>
+      <div class="glass"><b>Forecasts</b><p class="mut">30, 60 and 90 day outlook with a confidence band.</p></div>
+      <div class="glass"><b>Ask Vantora</b><p class="mut">Plain-language answers with inline charts.</p></div>
+    </div>
+    <p class="mut" style="font-size:13px"><a href="https://github.com/" style="color:inherit">GitHub</a> &nbsp; <a href="https://linkedin.com/" style="color:inherit">LinkedIn</a></p>
+  </div>
+</section>
+
+<section id="app" hidden>
+<header class="top">
+  <button class="logo" id="home" aria-label="Back to home">Vantora</button>
+  <button class="pill live" id="liveBtn" aria-pressed="true"><span class="dot"></span><span id="liveTxt">Live data</span></button>
+  <span class="pill" style="background:rgba(34,211,238,.12);color:var(--cy)"><span class="dot"></span>All systems healthy</span>
+  <button class="chip" id="themeBtn" aria-label="Toggle theme">Light / Dark</button>
+  <button class="btn" id="aiBtn">Try Vantora AI</button>
+</header>
+<main>
+  <div class="pagehead span3">
+    <h2>Overview</h2>
+    <label class="mut" style="font-size:12px">Region <select id="region"><option>All</option><option>APAC</option><option>EMEA</option><option>AMER</option></select></label>
+    <button class="chip" id="exportBtn">Export CSV</button>
+  </div>
+
+  <div class="glass kpi"><p class="mut">Growth score</p>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end"><div><div class="v"><span id="k3">0</span></div><span class="tr up">▲ 4.1%</span></div>
+    <svg viewBox="0 0 120 66" width="120" aria-hidden="true"><path d="M10 60A50 50 0 0 1 110 60" pathLength="100" fill="none" stroke="var(--line)" stroke-width="9" stroke-linecap="round"/><path class="draw" d="M10 60A50 50 0 0 1 110 60" pathLength="100" fill="none" stroke="var(--ind)" stroke-width="9" stroke-linecap="round" style="stroke-dasharray:78 100;animation:none;stroke-dashoffset:0"/></svg></div></div>
+  <div class="glass kpi"><p class="mut">Net revenue</p>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end"><div><div class="v" id="k1">$0</div><span class="tr up">▲ 12.4%</span></div><div id="s1"></div></div></div>
+  <div class="glass kpi"><p class="mut">Conversion rate</p>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end"><div><div class="v" id="k2">0%</div><span class="tr dn">▼ 1.2%</span></div><div id="s2"></div></div></div>
+
+  <div class="glass span2"><h3>Revenue forecast <span><button class="chip" data-h="30" aria-pressed="true">30d</button> <button class="chip" data-h="60" aria-pressed="false">60d</button> <button class="chip" data-h="90" aria-pressed="false">90d</button></span></h3>
+    <div id="fc"></div></div>
+  <div class="glass"><h3>Revenue mix</h3><div style="position:relative"><svg id="donut" class="donut" viewBox="0 0 42 42" style="width:100%;max-height:190px"></svg></div><div id="legend" style="font-size:13px"></div></div>
+
+  <div class="glass span2"><h3>Cohort retention <button class="chip" id="churnBtn">Churn Alert</button></h3><div class="bars" id="bars"></div></div>
+  <div class="glass"><h3>AI insights</h3><div id="ins"></div></div>
+
+  <div class="glass span3"><h3>Integrations status</h3>
+    <div style="overflow-x:auto"><table><thead><tr><th>App</th><th>Health</th><th>Sync</th><th>Automation</th></tr></thead><tbody id="integ"></tbody></table></div></div>
+</main>
+
+<aside class="glass panel" id="churn" role="dialog" aria-label="At-risk customers"><h3>At-risk customers <button class="x" data-close aria-label="Close">×</button></h3><div id="risk"></div></aside>
+<aside class="glass panel" id="ai" role="dialog" aria-label="Vantora AI"><h3>Vantora AI <button class="x" data-close aria-label="Close">×</button></h3>
+  <div class="msgs" id="msgs" aria-live="polite"><p class="mut">Ask about revenue, regions or forecasts.</p></div>
+  <div id="prompts" style="display:flex;flex-wrap:wrap;gap:8px"></div></aside>
+</section>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const F={All:1,APAC:.42,EMEA:.3,AMER:.28};
+const S={region:'All',h:30,live:true,rev:[30,34,33,38,42,40,46,49,47,54,52,56],conv:[19,20,19.5,21,20.6,21.5,21.2,22,21.5,21.8,21.4,21.5]};
+const money=n=>'$'+Math.round(n).toLocaleString();
+function toast(t){const e=$('#toast');e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2200)}
+function count(el,to,f){const from=+el.dataset.v||0;el.dataset.v=to;const t0=performance.now();(function s(t){const k=Math.min(1,(t-t0)/900);el.textContent=f(from+(to-from)*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(s)})(t0)}
+function spark(a,c,id){const w=120,h=44,mx=Math.max(...a),mn=Math.min(...a);const l=a.map((v,i)=>(i?'L':'M')+(i*w/(a.length-1)).toFixed(1)+' '+(h-4-(v-mn)/(mx-mn||1)*(h-8)).toFixed(1)).join('');
+return `<svg viewBox="0 0 ${w} ${h}" class="spark" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".5"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs><path d="${l}L${w} ${h}L0 ${h}Z" fill="url(#${id})"/><path d="${l}" fill="none" stroke="${c}" stroke-width="2"/></svg>`}
+
+function kpis(){const f=F[S.region];count($('#k1'),S.rev.at(-1)*1000*f,money);count($('#k2'),S.conv.at(-1),v=>v.toFixed(1)+'%');count($('#k3'),78,v=>Math.round(v));
+$('#s1').innerHTML=spark(S.rev,'#34D399','g1');$('#s2').innerHTML=spark(S.conv,'#22D3EE','g2')}
+
+function points(){const f=F[S.region],n=30+S.h;return Array.from({length:n},(_,d)=>({d,v:(40+d*.9+(Math.sin(d*12.9898)*.5+.5)*6)*f,sp:d<30?0:(3+(d-30)*.35)*f}))}
+function forecast(){const P=points(),n=P.length,W=600,H=240,mx=Math.max(...P.map(p=>p.v+p.sp))*1.05,X=d=>d/(n-1)*W,Y=v=>H-22-v/mx*(H-34);
+const path=a=>a.map((p,i)=>(i?'L':'M')+X(p.d).toFixed(1)+' '+Y(p.v).toFixed(1)).join('');
+const act=P.slice(0,30),fc=P.slice(29),up=fc.map(p=>X(p.d).toFixed(1)+','+Y(p.v+p.sp).toFixed(1)),lo=[...fc].reverse().map(p=>X(p.d).toFixed(1)+','+Y(p.v-p.sp).toFixed(1));
+const a=P[19];let g='';for(let i=0;i<4;i++){const y=18+i*(H-40)/3;g+=`<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="var(--line)"/>`}
+$('#fc').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Revenue forecast chart" style="width:100%">${g}<polygon class="fade" points="${up.join(' ')} ${lo.join(' ')}" fill="#6366F1" opacity=".22"/><path class="draw" pathLength="1" d="${path(act)}" fill="none" stroke="#22D3EE" stroke-width="2.5"/><path class="fade" d="${path(fc)}" fill="none" stroke="#6366F1" stroke-width="2.5" stroke-dasharray="4 5"/><line x1="${X(29)}" x2="${X(29)}" y1="8" y2="${H-22}" stroke="var(--mut)" stroke-dasharray="2 4"/><circle cx="${X(a.d)}" cy="${Y(a.v)}" r="6" fill="#FB7185"><title>Anomaly: unusual dip on day 19</title></circle><text x="${X(a.d)+9}" y="${Y(a.v)-8}">anomaly</text><text x="${X(29)+6}" y="20">forecast</text></svg>`}
+
+const mix=[['Subscriptions',54,'#6366F1'],['API access',28,'#22D3EE'],['Consulting',18,'#FBBF24']];
+function donut(){let off=0,h='';mix.forEach(([n,v,c],i)=>{h+=`<circle data-i="${i}" tabindex="0" r="15.9155" cx="21" cy="21" fill="none" stroke="${c}" stroke-width="5" stroke-dasharray="${v-1} ${101-v}" stroke-dashoffset="${-off}" transform="rotate(-90 21 21)"><title>${n} ${v}%</title></circle>`;off+=v});
+$('#donut').innerHTML=h+'<text id="dn" x="21" y="23" text-anchor="middle" style="font-size:6px;font-weight:700;fill:var(--ink)">100%</text>';
+$('#legend').innerHTML=mix.map(([n,v,c])=>`<div style="display:flex;gap:8px;align-items:center"><span class="dot" style="color:${c}"></span>${n}<span class="mut" style="margin-left:auto">${v}%</span></div>`).join('');
+$$('#donut circle').forEach(c=>{const on=()=>{c.setAttribute('stroke-width',7.5);$('#dn').textContent=mix[c.dataset.i][1]+'%'},off=()=>{c.setAttribute('stroke-width',5);$('#dn').textContent='100%'};c.onmouseenter=on;c.onmouseleave=off;c.onfocus=on;c.onblur=off})}
+
+const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],vals=[62,78,86,72,58,46,38],cols=['#6366F1','#7c6cf0','#22D3EE','#34D399','#FBBF24','#fb9a5a','#FB7185'],ini=['AK','MR','SL','JP','TN','CW','HB'];
+function bars(){$('#bars').innerHTML=days.map((d,i)=>`<div class="bar"><span class="av" style="background:${cols[i]}">${ini[i]}</span><b style="height:0;background:linear-gradient(${cols[i]},${cols[(i+1)%7]}66)" data-h="${vals[i]}"></b>${d}</div>`).join('');
+requestAnimationFrame(()=>requestAnimationFrame(()=>$$('#bars b').forEach(b=>b.style.height=Math.round(b.dataset.h*.7)+'%')))}
+
+const apps=[['Stripe','#635bff',[1,1,1],100,1],['Zapier','#ff4a00',[1,1,0],64,0],['Shopify','#5a9e3a',[1,1,1],88,1],['Slack','#9333ea',[1,0,0],37,1]];
+function integ(){$('#integ').innerHTML=apps.map(([n,c,h,p,on])=>`<tr><td><span class="av" style="background:${c};display:inline-grid;vertical-align:middle;margin-right:8px">${n[0]}</span>${n}</td><td>${h.map(x=>`<span style="color:${x?'var(--em)':'var(--am)'}" aria-label="${x?'ok':'warning'}">●</span>`).join(' ')}</td><td><div class="prog"><i style="width:0" data-w="${p}"></i></div></td><td><button class="sw" role="switch" aria-checked="${!!on}" aria-label="${n} automation"></button></td></tr>`).join('');
+setTimeout(()=>$$('.prog i').forEach(i=>i.style.width=i.dataset.w+'%'),60);$$('.sw').forEach(s=>s.onclick=()=>s.setAttribute('aria-checked',s.getAttribute('aria-checked')!=='true'))}
+
+const insights=[['APAC renewals are 9% below plan','Send reminders'],['Pro tier conversion jumped after the new trial','Extend the test'],['3 enterprise accounts show falling usage','Open churn list']];
+$('#ins').innerHTML=insights.map(([t,b])=>`<div class="card-i"><span>${t}</span><button class="btn" data-act="${b}">${b}</button></div>`).join('');
+$$('[data-act]').forEach(b=>b.onclick=()=>toast('Done: '+b.dataset.act));
+$('#risk').innerHTML=[['Northwind Co.',82],['Atlas Labs',74],['Helio Retail',69],['Orbit Studio',61]].map(([n,r])=>`<div class="card-i"><span class="av" style="background:var(--ro)">${n[0]}</span><span>${n}<br><span class="mut" style="font-size:12px">${r}% churn risk</span></span><button class="btn" data-act="Contact ${n}">Contact</button></div>`).join('');
+$$('#risk [data-act]').forEach(b=>b.onclick=()=>toast('Done: '+b.dataset.act));
+
+/* AI mock engine, swap for a real LLM here */
+const script=[[/november|drop/i,'Revenue dipped 6.2% in November. APAC renewals slipped a week and a pricing test lowered Pro conversion.',[52,51,49,44,41,43,47]],[/region/i,'APAC leads with $9.2K net revenue this period. AMER is growing fastest at +14% week over week.'],[/forecast/i,'Next month is projected at $58.4K with an 80% band of $54K to $63K, assuming retention holds.',[44,46,49,52,55,57,58]]];
+const ai={async ask(q,on){const h=script.find(s=>s[0].test(q));const t=h?h[1]:'I can explain revenue changes, regional performance or forecasts. Try a suggested prompt.';for(const w of t.split(' ')){await new Promise(r=>setTimeout(r,35));on(w+' ')}return h&&h[2]}};
+let busy=false;
+async function ask(q){if(busy)return;busy=true;const m=$('#msgs');if(m.firstElementChild?.classList.contains('mut'))m.innerHTML='';
+m.insertAdjacentHTML('beforeend',`<div class="m-u"></div><div class="m-a"></div>`);m.querySelectorAll('.m-u')[m.querySelectorAll('.m-u').length-1].textContent=q;const out=m.lastElementChild;
+const c=await ai.ask(q,t=>{out.append(t);m.scrollTop=m.scrollHeight});if(c)out.insertAdjacentHTML('beforeend',spark(c,'#22D3EE','gc'+Date.now()).replace('class="spark"','style="width:100%;height:70px;display:block;margin-top:8px"'));busy=false}
+$('#prompts').innerHTML=['Why did revenue drop in November?','Top performing region?','Forecast next month'].map(p=>`<button class="chip">${p}</button>`).join('');
+$$('#prompts .chip').forEach(b=>b.onclick=()=>ask(b.textContent));
+
+/* controls */
+const openP=id=>{$$('.panel').forEach(p=>p.classList.remove('open'));$(id).classList.add('open')};
+$('#aiBtn').onclick=()=>openP('#ai');$('#churnBtn').onclick=()=>openP('#churn');
+$$('[data-close]').forEach(b=>b.onclick=()=>b.closest('.panel').classList.remove('open'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$$('.panel').forEach(p=>p.classList.remove('open'))});
+$('#themeBtn').onclick=()=>{const r=document.documentElement;r.dataset.theme=r.dataset.theme==='dark'?'light':'dark'};
+$('#liveBtn').onclick=e=>{S.live=!S.live;e.currentTarget.setAttribute('aria-pressed',S.live);e.currentTarget.classList.toggle('live',S.live);$('#liveTxt').textContent=S.live?'Live data':'Paused'};
+$('#region').onchange=e=>{S.region=e.target.value;kpis();forecast()};
+$$('[data-h]').forEach(b=>b.onclick=()=>{S.h=+b.dataset.h;$$('[data-h]').forEach(x=>x.setAttribute('aria-pressed',x===b));forecast()});
+$('#exportBtn').onclick=()=>{const csv='day,value,band\n'+points().map(p=>`${p.d},${p.v.toFixed(2)},${p.sp.toFixed(2)}`).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='vantora-forecast.csv';a.click();toast('Exported forecast.csv')};
+setInterval(()=>{if(!S.live||$('#app').hidden)return;const nx=a=>[...a.slice(1),Math.max(1,a.at(-1)+(Math.random()-.45)*(a===S.rev?4:.6))];S.rev=nx(S.rev);S.conv=nx(S.conv);kpis()},2500);
+
+/* routing */
+let ready=false;
+function route(){const app=location.hash==='#app';$('#landing').hidden=app;$('#app').hidden=!app;if(app){if(!ready){integ();bars();donut();ready=true}kpis();forecast()}scrollTo(0,0)}
+$('#launch').onclick=()=>location.hash='#app';$('#home').onclick=()=>location.hash='';
+addEventListener('hashchange',route);route();
+</script>
+</body>
+</html>
